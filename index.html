@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obfuscator</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Monaco Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="loading-spinner"></div>
+            <span class="loading-text">Loading Editor...</span>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app" id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                    <span>Obfuscator<span class="logo-accent">Pro</span></span>
+                </div>
+                
+                <!-- Language Selector -->
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="javascript">
+                        <svg class="lang-icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm16.525 13.707c-.131-.821-.666-1.511-2.252-2.155-.552-.259-1.165-.438-1.349-.854-.068-.248-.078-.382-.034-.529.113-.484.687-.629 1.137-.495.293.09.563.315.732.676.775-.507.775-.507 1.316-.844-.203-.314-.304-.451-.439-.586-.473-.528-1.103-.798-2.126-.775l-.528.067c-.507.124-.991.395-1.283.754-.855.968-.608 2.655.427 3.354 1.023.765 2.521.933 2.712 1.653.18.878-.652 1.159-1.475 1.058-.607-.136-.945-.439-1.316-1.002l-1.372.788c.157.359.337.517.607.832 1.305 1.316 4.568 1.249 5.153-.754.021-.067.18-.528.056-1.237l.034.049zm-6.737-5.434h-1.686c0 1.453-.007 2.898-.007 4.354 0 .924.047 1.772-.104 2.033-.247.517-.886.451-1.175.359-.297-.146-.448-.349-.623-.641-.047-.078-.082-.146-.095-.146l-1.368.844c.229.473.563.879.994 1.137.641.383 1.502.507 2.404.305.588-.17 1.095-.519 1.358-1.059.384-.697.302-1.553.299-2.509.008-1.541 0-3.083 0-4.635l.003-.042z"/></svg>
+                        <span>JavaScript</span>
+                    </button>
+                    <button class="lang-btn" data-lang="typescript">
+                        <svg class="lang-icon" viewBox="0 0 24 24"><path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z"/></svg>
+                        <span>TypeScript</span>
+                    </button>
+                    <button class="lang-btn" data-lang="python">
+                        <svg class="lang-icon" viewBox="0 0 24 24"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/></svg>
+                        <span>Python</span>
+                    </button>
+                    <button class="lang-btn" data-lang="lua">
+                        <svg class="lang-icon" viewBox="0 0 24 24"><path d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12zm-12 2.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm6.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+                        <span>Lua</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="icon-btn" id="historyBtn" title="History">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="shortcutsBtn" title="Keyboard Shortcuts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>
+                    </svg>
+                </button>
+                <div class="divider-v"></div>
+                <button class="icon-btn" id="settingsBtn" title="Editor Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="themeBtn" title="Toggle Theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Editors Panel -->
+            <div class="editors-panel">
+                <!-- Input Editor -->
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <div class="editor-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                            <span>Source Code</span>
+                        </div>
+                        <div class="editor-actions">
+                            <button class="editor-btn" id="formatBtn" title="Format Code (Ctrl+Shift+F)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="21" y1="10" x2="3" y2="10"/>
+                                    <line x1="21" y1="6" x2="3" y2="6"/>
+                                    <line x1="21" y1="14" x2="3" y2="14"/>
+                                    <line x1="21" y1="18" x2="3" y2="18"/>
+                                </svg>
+                            </button>
+                            <button class="editor-btn" id="clearBtn" title="Clear">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                            </button>
+                            <button class="editor-btn" id="uploadBtn" title="Upload File">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </button>
+                            <input type="file" id="fileInput" hidden accept=".js,.ts,.py,.lua,.txt">
+                        </div>
+                    </div>
+                    <div class="editor-container" id="inputEditor"></div>
+                    <div class="editor-footer">
+                        <span class="editor-stat" id="inputLines">Lines: 0</span>
+                        <span class="editor-stat" id="inputChars">Characters: 0</span>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn-primary" id="obfuscateBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                        <span>Obfuscate</span>
+                        <kbd>Ctrl+Enter</kbd>
+                    </button>
+                    
+                    <div class="action-secondary">
+                        <button class="btn-ghost" id="swapBtn" title="Swap Input/Output">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="17 1 21 5 17 9"/>
+                                <path d="M3 11V9a4 4 0 014-4h14"/>
+                                <polyline points="7 23 3 19 7 15"/>
+                                <path d="M21 13v2a4 4 0 01-4 4H3"/>
+                            </svg>
+                        </button>
+                        <button class="btn-ghost" id="compareBtn" title="Compare">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Editor -->
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <div class="editor-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <span>Obfuscated Code</span>
+                        </div>
+                        <div class="editor-actions">
+                            <button class="editor-btn" id="copyBtn" title="Copy to Clipboard (Ctrl+Shift+C)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                                </svg>
+                            </button>
+                            <button class="editor-btn" id="downloadBtn" title="Download">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </button>
+                            <button class="editor-btn" id="runBtn" title="Run Code (Ctrl+Shift+R)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-container" id="outputEditor"></div>
+                    <div class="editor-footer">
+                        <span class="editor-stat" id="outputLines">Lines: 0</span>
+                        <span class="editor-stat" id="outputChars">Characters: 0</span>
+                        <span class="editor-stat ratio" id="sizeRatio">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 20V10"/>
+                                <path d="M12 20V4"/>
+                                <path d="M6 20v-6"/>
+                            </svg>
+                            <span>0%</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                        <span>Options</span>
+                    </h2>
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="sidebar-content">
+                    <!-- Quick Presets -->
+                    <section class="settings-section">
+                        <div class="section-header">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            <span>Quick Presets</span>
+                        </div>
+                        <div class="presets-grid">
+                            <button class="preset-btn" data-preset="minimal">
+                                <span class="preset-icon">🌱</span>
+                                <span class="preset-name">Minimal</span>
+                                <span class="preset-desc">Light protection</span>
+                            </button>
+                            <button class="preset-btn active" data-preset="balanced">
+                                <span class="preset-icon">⚖️</span>
+                                <span class="preset-name">Balanced</span>
+                                <span class="preset-desc">Recommended</span>
+                            </button>
+                            <button class="preset-btn" data-preset="aggressive">
+                                <span class="preset-icon">🔥</span>
+                                <span class="preset-name">Aggressive</span>
+                                <span class="preset-desc">Strong protection</span>
+                            </button>
+                            <button class="preset-btn" data-preset="paranoid">
+                                <span class="preset-icon">🛡️</span>
+                                <span class="preset-name">Paranoid</span>
+                                <span class="preset-desc">Maximum security</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Identifier Transformation -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="identifiers">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="4 7 4 4 20 4 20 7"/>
+                                <line x1="9" y1="20" x2="15" y2="20"/>
+                                <line x1="12" y1="4" x2="12" y2="20"/>
+                            </svg>
+                            <span>Identifiers</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="identifiers-content">
+                            <div class="setting-group">
+                                <label class="toggle-setting">
+                                    <input type="checkbox" id="renameVariables" checked>
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">Rename Variables</span>
+                                </label>
+                                
+                                <label class="toggle-setting">
+                                    <input type="checkbox" id="renameGlobals">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">Rename Globals</span>
+                                </label>
+                                
+                                <label class="toggle-setting">
+                                    <input type="checkbox" id="renameProperties">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">Rename Properties</span>
+                                </label>
+                                
+                                <label class="toggle-setting">
+                                    <input type="checkbox" id="renameFunctions" checked>
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">Rename Functions</span>
+                                </label>
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Naming Generator</label>
+                                <div class="select-wrapper">
+                                    <select id="identifierGenerator">
+                                        <option value="hexadecimal">Hexadecimal (_0x4a3f)</option>
+                                        <option value="mangled">Mangled (a, b, c...)</option>
+                                        <option value="dictionary">Dictionary Words</option>
+                                        <option value="randomUnicode">Random Unicode</option>
+                                        <option value="zalgo">Zalgo Text</option>
+                                        <option value="invisible">Invisible Characters</option>
+                                        <option value="confusables">Similar Chars (Il1O0)</option>
+                                        <option value="greek">Greek Letters</option>
+                                        <option value="emoji">Emoji Variables</option>
+                                        <option value="custom">Custom Charset</option>
+                                    </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Name Length</span>
+                                    <span class="setting-value" id="nameLengthValue">6</span>
+                                </label>
+                                <input type="range" class="range-slider" id="nameLength" min="2" max="24" value="6">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Identifier Prefix</label>
+                                <input type="text" class="text-input" id="identifierPrefix" placeholder="_0x">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Reserved Names</label>
+                                <input type="text" class="text-input" id="reservedNames" placeholder="$, jQuery, React">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- String Obfuscation -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="strings">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                            </svg>
+                            <span>Strings</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="strings-content">
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="stringArray" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">String Array</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="rotateStringArray" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Rotate Array</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="shuffleStringArray" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Shuffle Array</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="splitStrings">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Split Strings</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="unicodeEscape">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Unicode Escape</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Encoding</label>
+                                <div class="select-wrapper">
+                                    <select id="stringEncoding">
+                                        <option value="none">None</option>
+                                        <option value="base64" selected>Base64</option>
+                                        <option value="rc4">RC4</option>
+                                        <option value="xor">XOR Cipher</option>
+                                        <option value="aes">AES-256</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>String Array Threshold</span>
+                                    <span class="setting-value" id="stringThresholdValue">75%</span>
+                                </label>
+                                <input type="range" class="range-slider" id="stringThreshold" min="0" max="100" value="75">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Split Chunk Size</span>
+                                    <span class="setting-value" id="splitChunkValue">5</span>
+                                </label>
+                                <input type="range" class="range-slider" id="splitChunk" min="1" max="20" value="5">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Encoding Iterations</span>
+                                    <span class="setting-value" id="encodingIterationsValue">1</span>
+                                </label>
+                                <input type="range" class="range-slider" id="encodingIterations" min="1" max="5" value="1">
+                            </div>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="wrapStringCalls">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Wrap String Calls</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="encodeUrls">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Encode URLs</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Numbers -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="numbers">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="4" y1="9" x2="20" y2="9"/>
+                                <line x1="4" y1="15" x2="20" y2="15"/>
+                                <line x1="10" y1="3" x2="8" y2="21"/>
+                                <line x1="16" y1="3" x2="14" y2="21"/>
+                            </svg>
+                            <span>Numbers</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="numbers-content">
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="numbersToExpressions">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Convert to Expressions</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="numbersToHex">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Hexadecimal Literals</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="numbersToBitwise">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Bitwise Operations</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Expression Complexity</span>
+                                    <span class="setting-value" id="numberComplexityValue">2</span>
+                                </label>
+                                <input type="range" class="range-slider" id="numberComplexity" min="1" max="5" value="2">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Control Flow -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="controlflow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            <span>Control Flow</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="controlflow-content">
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="controlFlowFlattening">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Control Flow Flattening</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Flattening Threshold</span>
+                                    <span class="setting-value" id="flatteningThresholdValue">75%</span>
+                                </label>
+                                <input type="range" class="range-slider" id="flatteningThreshold" min="0" max="100" value="75">
+                            </div>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="deadCodeInjection">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Dead Code Injection</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">
+                                    <span>Dead Code Amount</span>
+                                    <span class="setting-value" id="deadCodeAmountValue">20%</span>
+                                </label>
+                                <input type="range" class="range-slider" id="deadCodeAmount" min="0" max="100" value="20">
+                            </div>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="opaquePredicates">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Opaque Predicates</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="blockStatementSplitting">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Block Statement Splitting</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="functionOutlining">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Function Outlining</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="proxyFunctions">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Proxy Functions</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Code Transformations -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="transforms">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                            <span>Transformations</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="transforms-content">
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="transformBooleans" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Transform Booleans</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="transformUndefined">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Transform undefined</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="transformNull">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Transform null</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="transformInfinity">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Transform Infinity</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="transformNaN">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Transform NaN</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="memberExpressionToBracket">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Dot to Bracket Notation</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="objectExpressionTransform">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Object Expression Transform</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="templateLiteralTransform">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Template Literal Transform</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="arrowFunctionTransform">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Arrow Function Transform</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="destructuringTransform">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Destructuring Transform</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="computedProperties">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Computed Properties</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="sequenceExpressions">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Sequence Expressions</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Protection -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="protection">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <span>Protection</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="protection-content">
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="selfDefending">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Self-Defending Code</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="antiDebug">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Anti-Debug Protection</span>
+                            </label>
+
+                            <div class="setting-item" id="antiDebugOptions" style="display: none;">
+                                <label class="setting-label">Debug Detection Method</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="debugDetectInterval" checked>
+                                        <span>Interval Check</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="debugDetectDebugger" checked>
+                                        <span>Debugger Statement</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="debugDetectDevtools">
+                                        <span>DevTools Detection</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="debugDetectTiming">
+                                        <span>Timing Analysis</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="disableConsole">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Disable Console</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="antiTampering">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Anti-Tampering</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="integrityCheck">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Integrity Checking</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Domain Lock</label>
+                                <input type="text" class="text-input" id="domainLock" placeholder="example.com, *.app.com">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Expiration Date</label>
+                                <input type="date" class="text-input" id="expirationDate">
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">License Key Variable</label>
+                                <input type="text" class="text-input" id="licenseKey" placeholder="window.LICENSE_KEY">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Output -->
+                    <section class="settings-section">
+                        <div class="section-header collapsible" data-section="output">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            <span>Output</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="section-content" id="output-content">
+                            <div class="setting-item">
+                                <label class="setting-label">Target</label>
+                                <div class="select-wrapper">
+                                    <select id="target">
+                                        <option value="browser">Browser</option>
+                                        <option value="browser-no-eval">Browser (No Eval)</option>
+                                        <option value="node">Node.js</option>
+                                        <option value="web-worker">Web Worker</option>
+                                    </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <label class="setting-label">ECMAScript Version</label>
+                                <div class="select-wrapper">
+                                    <select id="esVersion">
+                                        <option value="es5">ES5</option>
+                                        <option value="es2015" selected>ES2015 (ES6)</option>
+                                        <option value="es2016">ES2016</option>
+                                        <option value="es2017">ES2017</option>
+                                        <option value="es2018">ES2018</option>
+                                        <option value="es2019">ES2019</option>
+                                        <option value="es2020">ES2020</option>
+                                        <option value="esnext">ESNext</option>
+                                    </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="compact" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Compact Output</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="simplify" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Simplify Expressions</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="sourceMap">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Generate Source Map</span>
+                            </label>
+
+                            <label class="toggle-setting">
+                                <input type="checkbox" id="sourceMapInline">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Inline Source Map</span>
+                            </label>
+
+                            <div class="setting-item">
+                                <label class="setting-label">Seed (for reproducible results)</label>
+                                <input type="text" class="text-input" id="seed" placeholder="Random">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sidebar Footer -->
+                <div class="sidebar-footer">
+                    <button class="footer-btn" id="importSettingsBtn" title="Import Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Import</span>
+                    </button>
+                    <button class="footer-btn" id="exportSettingsBtn" title="Export Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Export</span>
+                    </button>
+                    <button class="footer-btn" id="resetSettingsBtn" title="Reset Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"/>
+                            <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+                        </svg>
+                        <span>Reset</span>
+                    </button>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                    </svg>
+                    Editor Settings
+                </h2>
+                <button class="modal-close" id="closeSettings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-tabs">
+                    <button class="modal-tab active" data-tab="appearance">Appearance</button>
+                    <button class="modal-tab" data-tab="editor">Editor</button>
+                    <button class="modal-tab" data-tab="behavior">Behavior</button>
+                </div>
+
+                <div class="modal-tab-content active" id="tab-appearance">
+                    <div class="modal-section">
+                        <h3>Theme</h3>
+                        <div class="theme-options">
+                            <label class="theme-option">
+                                <input type="radio" name="editorTheme" value="vs-dark" checked>
+                                <span class="theme-preview dark">
+                                    <span class="theme-name">Dark</span>
+                                </span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="editorTheme" value="vs">
+                                <span class="theme-preview light">
+                                    <span class="theme-name">Light</span>
+                                </span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="editorTheme" value="hc-black">
+                                <span class="theme-preview hc">
+                                    <span class="theme-name">High Contrast</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>Font</h3>
+                        <div class="setting-row">
+                            <label>Font Family</label>
+                            <div class="select-wrapper">
+                                <select id="editorFontFamily">
+                                    <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                                    <option value="'Fira Code', monospace">Fira Code</option>
+                                    <option value="Consolas, monospace">Consolas</option>
+                                    <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                                    <option value="'Cascadia Code', monospace">Cascadia Code</option>
+                                    <option value="Monaco, monospace">Monaco</option>
+                                </select>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label>
+                                Font Size
+                                <span class="value" id="fontSizeDisplay">14px</span>
+                            </label>
+                            <input type="range" id="editorFontSize" min="10" max="24" value="14">
+                        </div>
+                        <div class="setting-row">
+                            <label>
+                                Line Height
+                                <span class="value" id="lineHeightDisplay">1.5</span>
+                            </label>
+                            <input type="range" id="editorLineHeight" min="1" max="2.5" step="0.1" value="1.5">
+                        </div>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorLigatures" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Font Ligatures</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-tab-content" id="tab-editor">
+                    <div class="modal-section">
+                        <h3>Display</h3>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorMinimap">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Show Minimap</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorLineNumbers" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Line Numbers</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorFolding" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Code Folding</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorHighlightLine" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Highlight Current Line</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorBracketPairs" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Bracket Pair Colorization</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorIndentGuides" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Indent Guides</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorWhitespace">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Show Whitespace</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-tab-content" id="tab-behavior">
+                    <div class="modal-section">
+                        <h3>Cursor</h3>
+                        <div class="setting-row">
+                            <label>Cursor Style</label>
+                            <div class="select-wrapper">
+                                <select id="editorCursorStyle">
+                                    <option value="line">Line</option>
+                                    <option value="block">Block</option>
+                                    <option value="underline">Underline</option>
+                                    <option value="line-thin">Thin Line</option>
+                                    <option value="block-outline">Block Outline</option>
+                                    <option value="underline-thin">Thin Underline</option>
+                                </select>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label>Cursor Blinking</label>
+                            <div class="select-wrapper">
+                                <select id="editorCursorBlinking">
+                                    <option value="blink">Blink</option>
+                                    <option value="smooth">Smooth</option>
+                                    <option value="phase">Phase</option>
+                                    <option value="expand">Expand</option>
+                                    <option value="solid">Solid</option>
+                                </select>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>Editing</h3>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorWordWrap">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Word Wrap</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorAutoClosing" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Auto Closing Brackets</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorAutoIndent" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Auto Indent</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorFormatOnPaste">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Format on Paste</span>
+                        </label>
+                        <label class="toggle-setting">
+                            <input type="checkbox" id="editorSmoothScrolling" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Smooth Scrolling</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" id="resetEditorSettings">Reset to Defaults</button>
+                <button class="btn-primary" id="saveEditorSettings">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal" id="shortcutsModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>
+                    </svg>
+                    Keyboard Shortcuts
+                </h2>
+                <button class="modal-close" id="closeShortcuts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="shortcuts-list">
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Obfuscate Code</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Enter</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Format Code</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>F</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Copy Output</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>C</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Run Code</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>R</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Toggle Sidebar</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>B</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Toggle Theme</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>T</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Upload File</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>O</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Download Output</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>S</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Clear Input</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>X</kbd>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-desc">Editor Settings</span>
+                        <kbd>Ctrl</kbd><span>+</span><kbd>,</kbd>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Drop Zone Overlay -->
+    <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Drop file here</span>
+        </div>
+    </div>
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    
+    <!-- App Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
